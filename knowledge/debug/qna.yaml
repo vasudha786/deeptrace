@@ -1,0 +1,116 @@
+version: 1
+domain: ibm-openshift-storage
+created_by: vasudha786
+seed_examples:
+- context: |
+    Metrics Agent Issue, where the metrics agent is not running successfuly 
+    The ibm-ocs-operator-controller-manager pod is part of the IBM OpenShift Container Storage (OCS) operator. 
+    It manages the lifecycle of storage resources like Ceph and NooBaa by reconciling custom resources such as StorageCluster. 
+    This pod ensures proper provisioning, health monitoring, and updates of storage components. It also integrates with IBM metering 
+    and licensing systems. Initial check should be ibm-ocs-operator-controller-manager pod to be in running state
+    After this ibm-ocs-operator-controller-manager is working, we should ensure metrics-agent is working fine. The metrics-agent pod 
+    is part of IBM Cloud monitoring and telemetry infrastructure. It collects and sends cluster and workload metrics 
+    (such as CPU, memory, storage usage) to IBM Cloud services. This pod helps enable observability features like dashboards, alerts, and usage metering. 
+    It typically runs as a DaemonSet to ensure metrics are collected from every node.
+  questions_and_answers:
+      - question: |
+          What is the first question to ask?
+        answer: |
+          Is the ibm-ocs-operator-controller-manager pod running in the kube-system namespace?
+      - question: |
+          If the ibm-ocs-operator-controller-manager pod is running successfully, what is the next question?
+        answer: |
+          Do the logs of the ibm-ocs-operator-controller-manager pod show any errors related to the metrics-agent
+      - question: |
+          If there is any error in the pod logs 
+        answer: |
+          Do the logs of any ibm-storage-metrics-agent pod show connection errors, telemetry issues, or failed metric pushes
+- context: |
+    Storagecluster and cephcluster not in ready state.
+    The ibm-ocs-operator-controller-manager pod is part of the IBM OpenShift Container Storage (OCS) operator. 
+    It manages the lifecycle of storage resources like Ceph and NooBaa by reconciling custom resources such as StorageCluster. 
+    This pod ensures proper provisioning, health monitoring, and updates of storage components. It also integrates with IBM metering 
+    and licensing systems. Initial check should be ibm-ocs-operator-controller-manager pod to be in running state
+    The minimum configuration for a basic OpenShift Data Foundation (ODF) deployment on IBM Cloud requires at least 3 worker nodes, 
+    each with 16 CPUs and 64 GB RAM that is 16x64
+  questions_and_answers:
+      - question: |
+          What is the first question to ask?
+        answer: |
+          Is the ibm-ocs-operator-controller-manager pod running in the kube-system namespace?
+      - question: |
+          If the ibm-ocs-operator-controller-manager pod is running successfully, what is the next question?
+        answer: |
+          Do the logs of the ibm-ocs-operator-controller-manager pod show any errors related to the nodes flavour
+      - question: |
+          If the right flavour is not found, what is the next question? 
+        answer: |
+          List the nodes and their falvours
+- context: |
+    Pods not yet up in Openshift storage namespace  
+    The ibm-ocs-operator-controller-manager pod is part of the IBM OpenShift Container Storage (OCS) operator. 
+    It manages the lifecycle of storage resources like Ceph and NooBaa by reconciling custom resources such as StorageCluster. 
+    This pod ensures proper provisioning, health monitoring, and updates of storage components. It also integrates with IBM metering 
+    and licensing systems. Initial check should be ibm-ocs-operator-controller-manager pod to be in running state.
+    check for cephcluster and storagecluster status where 
+    The Ceph Storage Cluster is the foundation for all Ceph deployments. Based upon RADOS , Ceph Storage Clusters consist of several types of daemons: 
+    a Ceph OSD Daemon (OSD) stores data as objects on a storage node. a Ceph Monitor (MON) maintains a master copy of the cluster map.
+  questions_and_answers:
+      - question: |
+          What is the first question to ask?
+        answer: |
+          Is the ibm-ocs-operator-controller-manager pod running in the kube-system namespace?
+      - question: |
+          If the ibm-ocs-operator-controller-manager pod is running successfully, what is the next question?
+        answer: |
+          Do the logs of the ibm-ocs-operator-controller-manager pod show any errors
+      - question: |
+          If there are no errors in the logs of ibm-ocs-operator-controller-manager, what is the next question? 
+        answer: |
+          Check for the status of cephcluster and storagecluster 
+      - question: |
+          If both cephcluster and storagecluster are in ready state, what is the follow-up question?
+        answer: |
+          Check if rook-ceph-osd-prepare-ocs-deviceset pods in openshift-storage are in completed state
+      - question: |
+          If the rook-ceph-osd-prepare-ocs-deviceset pods are not come up, what is the follow-up question?
+        answer: |
+          Check for pvc in openshift-storage namespace and see if ocs-deviceset and rook-ceph-mon pvcs are up and in bound state 
+      - question: |
+          If any pvc in openshift-storage namespace are not yet up, what is the follow-up question?
+        answer: |
+          check for rook-ceph-operator pod logs in OpenShift-storage namespace 
+- context: |
+    If the apps that I have deployed is not not running and the the pvcs i have created is still in pending state
+    The ibm-ocs-operator-controller-manager pod is part of the IBM OpenShift Container Storage (OCS) operator. 
+    It manages the lifecycle of storage resources like Ceph and NooBaa by reconciling custom resources such as StorageCluster. 
+    This pod ensures proper provisioning, health monitoring, and updates of storage components. It also integrates with IBM metering 
+    and licensing systems. Initial check should be ibm-ocs-operator-controller-manager pod to be in running state.
+  questions_and_answers:
+      - question: |
+          What is the first question to ask?
+        answer: |
+          Is the ibm-ocs-operator-controller-manager pod running in the kube-system namespace?
+      - question: |
+          If the ibm-ocs-operator-controller-manager pod is running successfully, what is the next question?
+        answer: |
+          Do the logs of the ibm-ocs-operator-controller-manager pod show any errors
+      - question: |
+          If there are no errors in the logs of ibm-ocs-operator-controller-manager, what is the next question? 
+        answer: |
+          Check for the status of cephcluster and storagecluster 
+      - question: |
+          If both cephcluster and storagecluster are in ready state, what is the follow-up question?
+        answer: |
+          Check if all pods in the openshift-storage namespace are in running/completed state
+      - question: |
+          If all pods in the openshift-storage namespace are in running/completed state, what is the follow-up question?
+        answer: |
+          Check the provisioner logs of the provisioner pod in OpenShift-storage namespace according to the storage class used 
+document_outline: |
+  Information about ODF and possible issues 
+document:
+  repo: https://github.com/vasudha786/deeptrace.git
+  commit: 79967ac8c64ea022f2a433a20639fa9d00e04873
+  patterns:
+    - ocs.md

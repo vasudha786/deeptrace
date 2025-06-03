@@ -69,7 +69,7 @@ seed_examples:
         answer: |
           Check for the status of cephcluster and storagecluster 
       - question: |
-          If both cephcluster and storagecluster are in ready state, what is the follow-up question?
+          If both cephcluster and storagecluster are in error or progressing state, what is the follow-up question?
         answer: |
           Check if rook-ceph-osd-prepare-ocs-deviceset pods in openshift-storage are in completed state
       - question: |
